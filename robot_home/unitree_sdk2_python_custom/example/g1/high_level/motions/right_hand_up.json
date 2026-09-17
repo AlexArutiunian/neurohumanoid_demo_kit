@@ -1,0 +1,22 @@
+[
+  {
+    "frame": [
+      { "name": "right_shoulder_pitch_joint", "angle": -55 },
+      { "name": "right_shoulder_roll_joint", "angle": -18 },
+      { "name": "right_elbow_joint", "angle": 20 }
+    ],
+    "duration": 1.0
+  },
+  {
+    "frame": [],
+    "duration": 1.5
+  },
+  {
+    "frame": [
+      { "name": "right_shoulder_pitch_joint", "angle": 0 },
+      { "name": "right_shoulder_roll_joint", "angle": 0 },
+      { "name": "right_elbow_joint", "angle": 45 }
+    ],
+    "duration": 1.0
+  }
+]

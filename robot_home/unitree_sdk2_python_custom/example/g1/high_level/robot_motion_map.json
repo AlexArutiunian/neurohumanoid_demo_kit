@@ -1,0 +1,34 @@
+{
+  "play_cmd_template": "cd ~/unitree_sdk2_python/example/g1/high_level && export PYTHONPATH=~/unitree_sdk2_python:$PYTHONPATH && python3 g1_json_upper.py eth0 --dataset-path {json_path}",
+  "motions": {
+    "left_hand_up": {
+      "json_path": "~/unitree_sdk2_python/example/g1/high_level/motions/left_hand_up.json"
+    },
+    "right_hand_up": {
+      "json_path": "~/unitree_sdk2_python/example/g1/high_level/motions/right_hand_up.json"
+    },
+    "both_hands_up": {
+      "json_path": "~/unitree_sdk2_python/example/g1/high_level/motions/both_hands_up.json"
+    }
+  },
+  "aliases": {
+    "left_hand_up": [
+      "левая рука вверх",
+      "левую руку вверх",
+      "левую вверх",
+      "left hand up"
+    ],
+    "right_hand_up": [
+      "правая рука вверх",
+      "правую руку вверх",
+      "правую вверх",
+      "right hand up"
+    ],
+    "both_hands_up": [
+      "обе руки вверх",
+      "обе вверх",
+      "две руки вверх",
+      "both hands up"
+    ]
+  }
+}

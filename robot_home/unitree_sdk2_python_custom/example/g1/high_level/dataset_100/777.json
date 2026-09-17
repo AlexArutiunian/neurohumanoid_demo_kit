@@ -1,0 +1,37 @@
+[
+  {
+    "frame": [
+      {"name": "right_shoulder_pitch_joint", "angle": -30},
+      {"name": "right_shoulder_roll_joint", "angle": -20},
+      {"name": "right_shoulder_yaw_joint", "angle": -10},
+      {"name": "right_elbow_joint", "angle": 3},
+      {"name": "right_wrist_roll_joint", "angle": 0},
+      {"name": "right_wrist_pitch_joint", "angle": 5},
+      {"name": "right_wrist_yaw_joint", "angle": 0}
+    ],
+    "duration": 2.0
+  },
+  {
+    "repeat": [
+      {
+        "frame": [
+          {"name": "right_wrist_yaw_joint", "angle": -40}
+        ],
+        "duration": 1.5
+      },
+      {
+        "frame": [
+          {"name": "right_wrist_yaw_joint", "angle": 40}
+        ],
+        "duration": 1.5
+      }
+    ],
+    "times": 2
+  },
+  {
+    "frame": [
+      {"name": "right_wrist_yaw_joint", "angle": 0}
+    ],
+    "duration": 1
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "frame": [
+      
+      {"name": "right_wrist_pitch_joint", "angle": 120},
+       {"name": "right_shoulder_pitch_joint", "angle": -135},
+       {"name": "right_shoulder_roll_joint", "angle": -45}
+   
+    ],
+    "duration": 2.5
+  },
+  {
+    "frame": [],
+    "duration": 20.0
+  }
+  
+]

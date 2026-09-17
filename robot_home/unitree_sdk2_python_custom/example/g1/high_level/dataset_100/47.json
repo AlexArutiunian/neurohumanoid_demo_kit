@@ -1,0 +1,17 @@
+[
+  {
+    "frame": [
+      {
+        "name": "waist_pitch_joint",
+        "angle": -20
+      }
+    ],
+    "duration": 5
+  },
+  {
+    "frame": [
+      
+    ],
+    "duration": 60
+  }
+]

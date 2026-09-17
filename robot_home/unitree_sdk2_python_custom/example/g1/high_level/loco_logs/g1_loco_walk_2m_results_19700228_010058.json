@@ -1,0 +1,17 @@
+{
+  "distance_m": 1.0,
+  "state_topic": "rt/odommodestate",
+  "speeds_mps": [
+    0.2
+  ],
+  "results": [
+    {
+      "speed_mps": 0.2,
+      "reached_target": false,
+      "elapsed_s": 6.621225952170789,
+      "progress_m": 0.7955921052209537,
+      "final_lateral_error_m": -0.0315885833356845,
+      "max_abs_lateral_error_m": 0.02646210919655494
+    }
+  ]
+}

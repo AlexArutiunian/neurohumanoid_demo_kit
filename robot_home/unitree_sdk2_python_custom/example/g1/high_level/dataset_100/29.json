@@ -1,0 +1,128 @@
+[
+  {
+    "frame": [
+      {
+        "name": "R_thumb_proximal_yaw_joint",
+        "angle": -5.7
+      },
+      {
+        "name": "R_thumb_proximal_pitch_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "R_thumb_intermediate_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "R_thumb_distal_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "R_middle_proximal_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "R_middle_intermediate_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "R_index_proximal_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "R_index_intermediate_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "right_shoulder_pitch_joint",
+        "angle": -64
+      },
+      {
+        "name": "right_shoulder_roll_joint",
+        "angle": -42
+      },
+      {
+        "name": "right_shoulder_yaw_joint",
+        "angle": -18
+      },
+      {
+        "name": "right_elbow_joint",
+        "angle": 8
+      },
+      {
+        "name": "right_wrist_pitch_joint",
+        "angle": -10
+      },
+      {
+        "name": "right_wrist_yaw_joint",
+        "angle": -30
+      },
+      {
+        "name": "right_wrist_roll_joint",
+        "angle": -72
+      },
+      {
+        "name": "R_ring_proximal_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "R_ring_intermediate_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "R_pinky_proximal_joint",
+        "angle": 0.0
+      },
+      {
+        "name": "R_pinky_intermediate_joint",
+        "angle": 0.0
+      }
+    ],
+    "duration": 3
+  },
+  {
+    "frame": [
+      {
+        "name": "right_wrist_pitch_joint",
+        "angle": -32
+      }
+    ],
+    "duration": 0.75
+  },
+  {
+    "frame": [
+      {
+        "name": "right_wrist_pitch_joint",
+        "angle": 14
+      }
+    ],
+    "duration": 0.75
+  },
+  {
+    "frame": [
+      {
+        "name": "right_wrist_pitch_joint",
+        "angle": -28
+      }
+    ],
+    "duration": 0.75
+  },
+  {
+    "frame": [
+      {
+        "name": "right_wrist_pitch_joint",
+        "angle": 12
+      }
+    ],
+    "duration": 0.75
+  },
+  {
+    "frame": [
+      {
+        "name": "right_wrist_pitch_joint",
+        "angle": -10
+      }
+    ],
+    "duration": 0.75
+  }
+]

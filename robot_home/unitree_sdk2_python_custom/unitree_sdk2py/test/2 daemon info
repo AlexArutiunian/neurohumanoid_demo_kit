@@ -1,0 +1,21 @@
+[0;1;32m●[0m master_service.service - LSB: master service init script.
+     Loaded: loaded (/etc/init.d/master_service; generated)
+     Active: [0;1;32mactive (running)[0m since Fri 1970-01-23 05:57:46 MSK; 17min ago
+       Docs: man:systemd-sysv-generator(8)
+    Process: 991 ExecStart=/etc/init.d/master_service start (code=exited, status=0/SUCCESS)
+      Tasks: 35 (limit: 18143)
+     Memory: 136.0M
+     CGroup: /system.slice/master_service.service
+             ├─1223 /unitree/module/master_service/master_service
+             └─2398 /unitree/module/video_hub_pc4/videohub_pc4
+
+Jan 23 06:14:47 ubuntu master_service[6452]:      Active: active (running) since Fri 1970-01-23 05:57:46 MSK; 17min ago
+Jan 23 06:14:47 ubuntu master_service[6452]:        Docs: man:systemd-sysv-generator(8)
+Jan 23 06:14:47 ubuntu master_service[6452]:     Process: 1094 ExecStart=/etc/init.d/ota_pipe start (code=exited, status=0/SUCCESS)
+Jan 23 06:14:47 ubuntu master_service[6452]:       Tasks: 7 (limit: 18143)
+Jan 23 06:14:47 ubuntu master_service[6452]:      Memory: 15.3M
+Jan 23 06:14:47 ubuntu master_service[6452]:      CGroup: /system.slice/ota_pipe.service
+Jan 23 06:14:47 ubuntu master_service[6452]:              └─1225 /unitree/ota/pipe/ota_pipe_service
+Jan 23 06:14:47 ubuntu master_service[6452]: Feb 10 18:50:40 ubuntu systemd[1]: Starting LSB: master service init script....
+Jan 23 06:14:47 ubuntu master_service[6452]: Jan 23 05:57:46 ubuntu ota_pipe[1094]: Starting ota_pipe:  ERROR.
+Jan 23 06:14:47 ubuntu master_service[6452]: Jan 23 05:57:46 ubuntu systemd[1]: Started LSB: master service init script..

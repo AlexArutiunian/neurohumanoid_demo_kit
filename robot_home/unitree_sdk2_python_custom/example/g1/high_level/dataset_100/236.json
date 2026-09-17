@@ -1,0 +1,70 @@
+[
+  {
+    "frame": [
+      {
+        "name": "right_elbow_joint",
+        "angle": -18.8
+      },
+      {
+        "name": "right_shoulder_pitch_joint",
+        "angle": -38.6
+      },
+      {
+        "name": "right_shoulder_roll_joint",
+        "angle": -9.9
+      },
+      {
+        "name": "right_shoulder_yaw_joint",
+        "angle": 1.8
+      },
+      {
+        "name": "right_wrist_pitch_joint",
+        "angle": -21.8
+      },
+      {
+        "name": "right_wrist_roll_joint",
+        "angle": -112.6
+      },
+      {
+        "name": "right_wrist_yaw_joint",
+        "angle": -40.3
+      }
+    ],
+    "duration": 1.5
+  },
+  {
+    "frame": [
+      {
+        "name": "right_elbow_joint",
+        "angle": 53.1
+      },
+      {
+        "name": "right_shoulder_pitch_joint",
+        "angle": -80.1
+      },
+      {
+        "name": "right_shoulder_roll_joint",
+        "angle": -21.9
+      },
+      {
+        "name": "right_shoulder_yaw_joint",
+        "angle": 6.2
+      },
+       
+      {
+        "name": "right_wrist_pitch_joint",
+        "angle": -16.9
+      },
+      {
+        "name": "right_wrist_roll_joint",
+        "angle": -111.6
+      },
+      {
+        "name": "right_wrist_yaw_joint",
+        "angle": 3.5
+      }
+    ],
+    "duration": 1
+  }
+]
+

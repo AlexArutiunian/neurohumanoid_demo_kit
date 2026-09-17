@@ -1,0 +1,177 @@
+{
+  "threshold": 80.0,
+  "duration": 30.0,
+  "baseline_frames": 10,
+  "stats": {
+    "small_tip_3x3": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 9,
+      "raw_max": 27.0,
+      "delta_abs_max": 2.8999999999999986,
+      "delta_signed_at_max": 2.8999999999999986,
+      "max_idx": 1,
+      "active_taxels_peak": 0
+    },
+    "small_tip_12x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 96,
+      "raw_max": 57.0,
+      "delta_abs_max": 13.0,
+      "delta_signed_at_max": -13.0,
+      "max_idx": 8,
+      "active_taxels_peak": 0
+    },
+    "small_pad_10x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 80,
+      "raw_max": 0.0,
+      "delta_abs_max": 0.0,
+      "delta_signed_at_max": 0.0,
+      "max_idx": null,
+      "active_taxels_peak": 0
+    },
+    "ring_tip_3x3": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 9,
+      "raw_max": 0.0,
+      "delta_abs_max": 0.0,
+      "delta_signed_at_max": 0.0,
+      "max_idx": null,
+      "active_taxels_peak": 0
+    },
+    "ring_tip_12x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 96,
+      "raw_max": 3138.0,
+      "delta_abs_max": 3138.0,
+      "delta_signed_at_max": 3138.0,
+      "max_idx": 3,
+      "active_taxels_peak": 44
+    },
+    "ring_pad_10x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 80,
+      "raw_max": 2653.0,
+      "delta_abs_max": 2653.0,
+      "delta_signed_at_max": 2653.0,
+      "max_idx": 72,
+      "active_taxels_peak": 74
+    },
+    "middle_tip_3x3": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 9,
+      "raw_max": 0.0,
+      "delta_abs_max": 0.0,
+      "delta_signed_at_max": 0.0,
+      "max_idx": null,
+      "active_taxels_peak": 0
+    },
+    "middle_tip_12x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 96,
+      "raw_max": 155.0,
+      "delta_abs_max": 20.4,
+      "delta_signed_at_max": 20.4,
+      "max_idx": 31,
+      "active_taxels_peak": 0
+    },
+    "middle_pad_10x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 80,
+      "raw_max": 0.0,
+      "delta_abs_max": 0.0,
+      "delta_signed_at_max": 0.0,
+      "max_idx": null,
+      "active_taxels_peak": 0
+    },
+    "index_tip_3x3": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 9,
+      "raw_max": 161.0,
+      "delta_abs_max": 3.8000000000000114,
+      "delta_signed_at_max": 3.8000000000000114,
+      "max_idx": 7,
+      "active_taxels_peak": 0
+    },
+    "index_tip_12x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 96,
+      "raw_max": 3.0,
+      "delta_abs_max": 3.0,
+      "delta_signed_at_max": 3.0,
+      "max_idx": 47,
+      "active_taxels_peak": 0
+    },
+    "index_pad_10x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 80,
+      "raw_max": 9.0,
+      "delta_abs_max": 9.0,
+      "delta_signed_at_max": 9.0,
+      "max_idx": 55,
+      "active_taxels_peak": 0
+    },
+    "thumb_tip_3x3": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 9,
+      "raw_max": 19.0,
+      "delta_abs_max": 19.7,
+      "delta_signed_at_max": -19.7,
+      "max_idx": 1,
+      "active_taxels_peak": 0
+    },
+    "thumb_tip_12x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 96,
+      "raw_max": 2224.0,
+      "delta_abs_max": 2224.0,
+      "delta_signed_at_max": 2224.0,
+      "max_idx": 43,
+      "active_taxels_peak": 80
+    },
+    "thumb_middle_3x3": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 9,
+      "raw_max": 3678.0,
+      "delta_abs_max": 3678.0,
+      "delta_signed_at_max": 3678.0,
+      "max_idx": 0,
+      "active_taxels_peak": 9
+    },
+    "thumb_pad_12x8": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 96,
+      "raw_max": 2559.0,
+      "delta_abs_max": 2559.0,
+      "delta_signed_at_max": 2559.0,
+      "max_idx": 47,
+      "active_taxels_peak": 73
+    },
+    "palm_8x14": {
+      "samples": 191,
+      "read_errors": 0,
+      "len": 112,
+      "raw_max": 22.0,
+      "delta_abs_max": 19.1,
+      "delta_signed_at_max": -19.1,
+      "max_idx": 50,
+      "active_taxels_peak": 0
+    }
+  }
+}
