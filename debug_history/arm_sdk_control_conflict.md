@@ -26,6 +26,57 @@ The main hazardous pattern was:
 
 That kind of conflict can produce buzzing, hissing, twitching, high actuator load, and unsafe motion.
 
+## Related joystick D-pad hazard: arrow sequences and accidental commands
+
+A second historical issue involved using the wireless-controller D-pad arrows as motion-launch controls.
+
+Observed dangerous case:
+
+- a `Left -> Right` arrow sequence was used around a launch path for `35.json`;
+- after that sequence, the robot behavior became harsh/uncontrolled;
+- direct manual runs of `g1_json_upper.py` could finish normally, but launching through the joystick path reproduced bad behavior;
+- the suspected mechanism was that D-pad arrow presses were also reaching the robot's stock/low-level controller as movement/turn/body commands while the custom arm demo was being started.
+
+Do **not** treat D-pad arrows as harmless generic buttons. On the G1 wireless controller they may have meaning outside this Python launcher, depending on robot mode and what other Unitree services are active.
+
+Bad pattern:
+
+```text
+Left arrow  -> prepare/retake/previous/mode switch
+Right arrow -> confirm/launch/next/mode switch
+Left then Right quickly -> launches a motion while also injecting arrow commands into the robot controller path
+```
+
+Risk:
+
+```text
+custom launcher state machine changes + stock controller D-pad handling + arm_sdk JSON control
+```
+
+This can create confusing state transitions and motion-controller overlap. It is especially bad when the launch action happens immediately on press instead of after a clean release/debounce interval.
+
+## Joystick mapping rules
+
+Preferred mapping for demo motions:
+
+- use `A`, `B`, and optionally `Down` for explicit JSON selection;
+- use `X`/`Y` only for RH56DFTP hand TCP poses;
+- use `Up` only for the narrow non-motion action: skip the current empty JSON hold frame by sending newline to the already-running player;
+- avoid `Left` and `Right` for starting arm motions;
+- avoid multi-arrow sequences such as `Left -> Right`, `Right -> Left`, `Up -> Down`, or `Down -> Up` for any action that can launch a new controller.
+
+Safer launcher behavior:
+
+1. detect a button edge;
+2. store a pending launch label;
+3. wait until the button is released;
+4. wait a short debounce/settle interval, for example `--launch-after-release-sec 0.35`;
+5. launch only if no other JSON player is active.
+
+Do not launch a new arm-control process directly on a D-pad press.
+
+Future rule: `Left` and `Right` should stay unassigned unless there is a strong reason and the behavior is tested on the real robot in the exact same mode. If they are ever used, they must not publish to `rt/arm_sdk` and must not launch another arm controller.
+
 ## Unsafe design pattern — do not reintroduce
 
 Do **not** write a launcher that both:
@@ -84,6 +135,7 @@ The launcher should be an orchestrator, not a second arm controller.
    - any script with `ChannelPublisher("rt/arm_sdk", LowCmd_)`
    - any script using `RecurrentThread` to publish joint commands
 5. `sliders_arm.py` is for the RH56DFTP hand TCP control, not Unitree arm joints, but do not run multiple hand TCP clients at the same time if they control the same hand.
+6. Do not map `Left`/`Right` D-pad sequences to motion launch or controller-mode changes without a real-robot safety review.
 
 ## Pre-flight check before demos
 
@@ -135,6 +187,15 @@ grep -R "ChannelPublisher\|rt/arm_sdk\|RecurrentThread\|LowCmd_" -n \
 
 If this finds a launcher or helper that publishes upper-body joint commands, review it very carefully. It may reintroduce the old conflict.
 
+Also check joystick-arrow usage:
+
+```bash
+grep -R "Left\|Right\|Up\|Down\|launch-after-release\|pending\|release_since" -n \
+  robot_home/unitree_sdk2_python_custom/example/g1/high_level/joystick_launch*.py
+```
+
+If `Left` or `Right` can launch motion or change controller state, treat it as a safety-critical change.
+
 ## Emergency recovery during testing
 
 If the robot starts buzzing or behaving wrong:
@@ -153,3 +214,13 @@ pkill -f 'hold_waist'
 4. Restart with only one controller active.
 
 Do not repeatedly relaunch JSON motions while the cause is unknown.
+
+## Historical note
+
+This repository keeps the debug note because the failure was easy to reproduce accidentally during fast demo iteration: joystick state-machine edits, D-pad mappings, and arm-control ownership were changed together. Future work should keep those concerns separate:
+
+```text
+joystick reader / state machine  !=  arm_sdk owner
+D-pad navigation                 !=  motion launch
+hand TCP pose commands           !=  Unitree upper-body joint control
+```
