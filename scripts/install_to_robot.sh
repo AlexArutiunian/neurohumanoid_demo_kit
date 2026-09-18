@@ -60,8 +60,29 @@ chmod +x "$DFTP_DST/"*.py 2>/dev/null || true
 
 cat > "$TARGET_HOME/g1_json_demo_env.sh" <<'EOF'
 #!/usr/bin/env bash
-export PYTHONPATH="$HOME/unitree_sdk2_python_custom:$PYTHONPATH"
+
+# Common demo environment for Ubuntu 22 / ROS 2 Humble and Ubuntu 20 / ROS 2 Foxy.
+# This file is optional for pure JSON playback from the high_level folder, but useful
+# when ROS 2 recording or imports need a clean environment.
+
+export PYTHONPATH="$HOME/unitree_sdk2_python_custom:${PYTHONPATH:-}"
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+if [ -f /opt/ros/humble/setup.bash ]; then
+  source /opt/ros/humble/setup.bash
+  export G1_DEMO_ROS_DISTRO=humble
+elif [ -f /opt/ros/foxy/setup.bash ]; then
+  source /opt/ros/foxy/setup.bash
+  export G1_DEMO_ROS_DISTRO=foxy
+else
+  echo "[WARN] No ROS2 setup found: /opt/ros/humble/setup.bash or /opt/ros/foxy/setup.bash" >&2
+fi
+
+if [ -f "$HOME/unitree_ros2/cyclonedds_ws/install/unitree_hg/share/unitree_hg/local_setup.bash" ]; then
+  source "$HOME/unitree_ros2/cyclonedds_ws/install/unitree_hg/share/unitree_hg/local_setup.bash"
+elif [ -f "$HOME/unitree_ros2/cyclonedds_ws/install/setup.bash" ]; then
+  source "$HOME/unitree_ros2/cyclonedds_ws/install/setup.bash"
+fi
 EOF
 chmod +x "$TARGET_HOME/g1_json_demo_env.sh"
 
@@ -106,5 +127,9 @@ except Exception as e:
 PY
 
 echo
+echo "[check] ROS2 setup auto-detect:"
+bash -lc "source '$TARGET_HOME/g1_json_demo_env.sh'; echo ROS_DISTRO=\${G1_DEMO_ROS_DISTRO:-none}; echo RMW_IMPLEMENTATION=\${RMW_IMPLEMENTATION:-none}" || true
+
+echo
 echo "[done] Installed Unitree G1 JSON demo kit."
-echo "[hint] Run: source ~/g1_json_demo_env.sh"
+echo "[hint] Optional: source ~/g1_json_demo_env.sh"
