@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import json
-import os
 import shlex
 import subprocess
 import threading
@@ -14,108 +13,32 @@ from unitree_sdk2py.idl.unitree_hg.msg.dds_ import LowState_
 
 from RH56DFTP.RH56DFTP_TCP import RH56DFTP_TCP
 
+# RH56DFTP right hand poses. Keep these conservative unless retested.
 OPEN_POSE = [0, 0, 0, 0, 0, 0]
 FIST_POSE = [1800, 1800, 1800, 1800, 2000, 2000]
 
-"""
-python3 joystick_launch_json_record.py eth0 \
-  --dataset-dir dataset_100 \
-  --json-a 29.json \
-  --json-b 35.json \
-  --json-down 47.json \
-  --duration-scale-a 1.0 \
-  --duration-scale-b 1.0 \
-  --duration-scale-down 1.0 \
-  --kp 60 \
-  --kd 1.5 \
-  --kp-waist 250 \
-  --kd-waist 6 \
-  --record-out-dir ./actual_motion_logs \
-  --record-rate-hz 50 \
-  --record-target-frame pelvis
-  
-  
-python3 joystick_launch_json_record.py eth0 \
-  --dataset-dir dataset_100 \
-  --json-a 888.json \
-  --json-b 35.json \
-  --json-down 47.json \
-  --duration-scale-a 1.0 \
-  --duration-scale-b 1.0 \
-  --duration-scale-down 1.0 \
-  --kp 60 \
-  --kd 1.5 \
-  --kp-waist 250 \
-  --kd-waist 6 \
-  --record-out-dir ./actual_motion_logs \
-  --record-rate-hz 50 \
-  --record-target-frame pelvis  
-  
-  
-python3 joystick_launch_json_record.py eth0 \
-  --dataset-dir dataset_100 \
-  --json-a 00.json \
-  --json-b 1111.json \
-  --json-down 0.json \
-  --duration-scale-a 1.0 \
-  --duration-scale-b 1.0 \
-  --duration-scale-down 1.0 \
-  --kp 60 \
-  --kd 1.5 \
-  --kp-waist 250 \
-  --kd-waist 6 \
-  --record-out-dir ./actual_motion_logs \
-  --record-rate-hz 50 \
-  --record-target-frame pelvis   
-  
-python3 joystick_launch_json_record.py eth0 \
-  --dataset-dir dataset_100 \
-  --json-a give_apple.json \
-  --json-b apple.json \
-  --json-down 0.json \
-  --duration-scale-a 1.0 \
-  --duration-scale-b 1.0 \
-  --duration-scale-down 1.0 \
-  --kp 60 \s
-  --kd 1.5 \
-  --kp-waist 250 \
-  --kd-waist 6 \
-  --record-out-dir ./actual_motion_logs \
-  --record-rate-hz 50 \
-  --record-target-frame pelvis  
-  
-python3 joystick_launch_json_record.py eth0 \
-  --dataset-dir dataset_100 \
-  --json-a wave_right000.json \
-  --json-b hold_box.json \
-  --json-down 0.json \
-  --duration-scale-a 1.0 \
-  --duration-scale-b 1.0 \
-  --duration-scale-down 1.0 \
-  --kp 60 \
-  --kd 1.5 \
-  --kp-waist 250 \
-  --kd-waist 6 \
-  --record-out-dir ./actual_motion_logs \
-  --record-rate-hz 50 \
-  --record-target-frame pelvis      
-  
-python3 joystick_launch_json_record.py eth0 \
-  --dataset-dir dataset_100 \
-  --json-a hold_apple_then_roll_it.json \
-  --json-b hold_apple.json \
-  --json-down 0noting.json \
-  --duration-scale-a 1.0 \
-  --duration-scale-b 1.0 \
-  --duration-scale-down 1.0 \
-  --kp 60 \
-  --kd 1.5 \
-  --kp-waist 250 \
-  --kd-waist 6 \
-  --record-out-dir ./actual_motion_logs \
-  --record-rate-hz 50 \
-  --record-target-frame pelvis   
-"""
+
+def ros2_auto_setup_shell() -> str:
+    """Return shell code that sources ROS 2 Humble or Foxy if installed.
+
+    Ubuntu 22 robots commonly use ROS 2 Humble.
+    Ubuntu 20 robots commonly use ROS 2 Foxy.
+    The recorder only needs the local ROS 2 Python environment, so selecting the
+    installed distro is safer than hard-coding /opt/ros/humble.
+    """
+    return (
+        "if [ -f /opt/ros/humble/setup.bash ]; then "
+        "source /opt/ros/humble/setup.bash; "
+        "export G1_DEMO_ROS_DISTRO=humble; "
+        "elif [ -f /opt/ros/foxy/setup.bash ]; then "
+        "source /opt/ros/foxy/setup.bash; "
+        "export G1_DEMO_ROS_DISTRO=foxy; "
+        "else "
+        "echo '[REC ERROR] No ROS2 setup found: expected /opt/ros/humble/setup.bash or /opt/ros/foxy/setup.bash' >&2; "
+        "exit 42; "
+        "fi; "
+    )
+
 
 class RemoteButtons:
     def __init__(self):
@@ -332,12 +255,13 @@ def main():
         if args.record_links.strip():
             py_args += ["--links", args.record_links.strip()]
 
-        # Важно: команды разделены через ; и python запускается через exec.
         shell_cmd = (
-            "source /opt/ros/humble/setup.bash; "
-            "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp; "
-            "export PYTHONNOUSERSITE=1; "
-            "exec " + " ".join(shlex.quote(x) for x in py_args)
+            ros2_auto_setup_shell()
+            + "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp; "
+            + "export PYTHONNOUSERSITE=1; "
+            + "echo '[REC] ROS2 distro:' ${G1_DEMO_ROS_DISTRO}; "
+            + "exec "
+            + " ".join(shlex.quote(x) for x in py_args)
         )
 
         print(f"[REC] start: {run_name}")
@@ -350,6 +274,7 @@ def main():
             stderr=subprocess.STDOUT,
             text=True,
         )
+        log_f.close()
 
         # Даём recorder чуть-чуть времени подписаться на /joint_states и /tf.
         time.sleep(max(0.0, float(args.record_warmup_sec)))
@@ -397,9 +322,6 @@ def main():
         if duration_scale != 1.0:
             cmd += ["--dataset-duration-scale", str(duration_scale)]
 
-        # Сохраняем параметры запуска рядом с фактическими CSV.
-        # Это нужно, чтобы потом сравнивать фактическое движение с ожидаемым JSON
-        # и точно знать, с какими kp/kd оно было выполнено.
         run_dir = Path(args.record_out_dir).resolve() / run_name
         run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -411,11 +333,9 @@ def main():
             "json_path": str(path),
             "json_stem": stem,
             "timestamp": ts,
-
             "iface": args.iface,
             "player": str(player),
             "recorder": str(recorder),
-
             "arm_control": {
                 "kp": float(args.kp),
                 "kd": float(args.kd),
@@ -424,20 +344,18 @@ def main():
                 "dataset_duration_scale": float(duration_scale),
                 "dataset_duration_max": 120.0,
             },
-
             "waist_control": {
                 "kp_waist": float(args.kp_waist),
                 "kd_waist": float(args.kd_waist),
             },
-
             "recording": {
                 "enabled": not bool(args.no_record),
                 "record_out_dir": str(Path(args.record_out_dir).resolve()),
                 "record_rate_hz": float(args.record_rate_hz),
                 "record_target_frame": args.record_target_frame,
                 "record_links": args.record_links,
+                "ros_setup": "auto: /opt/ros/humble or /opt/ros/foxy",
             },
-
             "command": cmd,
             "command_string": " ".join(cmd),
         }
