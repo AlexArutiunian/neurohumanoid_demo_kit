@@ -10,6 +10,22 @@ This branch contains the cleaned robot-side files for:
 - Unitree G1 URDF with Inspire hand;
 - RH56DFTP / Inspire hand example scripts and tactile toolkit notes.
 
+## Ubuntu / ROS 2 compatibility
+
+The JSON arm playback itself is mostly independent of Ubuntu 20 vs Ubuntu 22 as long as `unitree_sdk2py` works and the correct network interface is used.
+
+The ROS recording path depends on the installed ROS 2 distro:
+
+- Ubuntu 22 usually uses ROS 2 Humble: `/opt/ros/humble/setup.bash`;
+- Ubuntu 20 usually uses ROS 2 Foxy: `/opt/ros/foxy/setup.bash`.
+
+This branch auto-detects Humble or Foxy in:
+
+- `robot_home/unitree_sdk2_python_custom/example/g1/high_level/joystick_launch_json_record.py` when it starts `record_actual_motion_ros.py`;
+- the generated `~/g1_json_demo_env.sh` created by `scripts/install_to_robot.sh`.
+
+If neither Humble nor Foxy exists, JSON playback can still run with `--no-record`, but ROS-based recording will not work until ROS 2 is installed/configured.
+
 ## Repository layout
 
 ```text
@@ -81,14 +97,24 @@ By default the install script copies files into `/home/unitree`. To install into
 TARGET_HOME=/home/unitree bash scripts/install_to_robot.sh
 ```
 
+The installer also creates:
+
+```bash
+~/g1_json_demo_env.sh
+```
+
+It is optional for pure JSON playback from the `high_level` folder, but useful for ROS setup and imports:
+
+```bash
+source ~/g1_json_demo_env.sh
+```
+
 ## Run the JSON joystick demo
 
 ### Terminal 1 — publish `/joint_states`
 
 ```bash
-source /opt/ros/humble/setup.bash
-export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-source ~/unitree_ros2/cyclonedds_ws/install/unitree_hg/share/unitree_hg/local_setup.bash
+source ~/g1_json_demo_env.sh
 cd ~/joints_xyz
 python3 lowstate_to_jointstates_ros.py
 ```
@@ -96,8 +122,7 @@ python3 lowstate_to_jointstates_ros.py
 ### Terminal 2 — robot state publisher
 
 ```bash
-source /opt/ros/humble/setup.bash
-export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+source ~/g1_json_demo_env.sh
 ros2 run robot_state_publisher robot_state_publisher \
   --ros-args \
   -p robot_description:="$(cat ~/g1_29dof_rev_1_0_with_inspire_hand_FTP.urdf)"
@@ -123,6 +148,19 @@ python3 joystick_launch_json_record.py eth0 \
   --record-out-dir ./actual_motion_logs \
   --record-rate-hz 50 \
   --record-target-frame pelvis
+```
+
+If ROS recording is not needed, the same launcher can run without recording:
+
+```bash
+cd ~/unitree_sdk2_python_custom/example/g1/high_level
+
+python3 joystick_launch_json_record.py eth0 \
+  --dataset-dir dataset_100 \
+  --json-a wave_right.json \
+  --json-b hold_box.json \
+  --json-down 0.json \
+  --no-record
 ```
 
 Joystick mapping in `joystick_launch_json_record.py`:
@@ -153,6 +191,14 @@ for f in \
  do
   [ -e "$f" ] && echo "OK   $f" || echo "MISS $f"
 done
+```
+
+Check selected ROS 2 environment:
+
+```bash
+source ~/g1_json_demo_env.sh
+echo "ROS_DISTRO=${G1_DEMO_ROS_DISTRO:-none}"
+echo "RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-none}"
 ```
 
 Check Unitree SDK import:
