@@ -10,6 +10,7 @@ import re
 import signal
 import sys
 import threading
+import tempfile
 import time
 from pathlib import Path
 from types import SimpleNamespace
@@ -57,7 +58,8 @@ def make_row(msg, seq, wall_ns, mono_ns):
             raise ValueError("Unexpected IMU length: " + key)
         row.extend(float(x) for x in values)
     row.append(int(imu.temperature))
-    for motor in msg.motor_state[:29]:
+    for index in range(29):
+        motor = msg.motor_state[index]
         if len(motor.temperature) != 2:
             raise ValueError("Unexpected motor temperature array")
         row.extend((float(motor.q), float(motor.dq), float(motor.ddq),
@@ -135,7 +137,17 @@ def _self_test():
     assert len(row) == len(columns())
     assert row[columns().index("right_knee_joint_tau_est")] == 1.2
     assert JOINT_NAMES[9] == "right_knee_joint"
-    print("SELF-TEST OK: 29 joints, IMU, channel schema")
+    with tempfile.TemporaryDirectory() as tmp:
+        rec = Recorder(Path(tmp) / "test.csv", 10)
+        rec.thread.start()
+        rec.callback(msg)
+        rec.stop.set()
+        rec.thread.join(timeout=3)
+        assert rec.writer_error is None and rec.saved == 1
+        with (Path(tmp) / "test.csv").open(newline="") as f:
+            saved = list(csv.reader(f))
+        assert len(saved) == 2 and len(saved[1]) == len(columns())
+    print("SELF-TEST OK: 29 joints, IMU, CSV writer, no SDK required")
 
 
 def main():
@@ -230,6 +242,7 @@ def main():
         "first_monotonic_ns": rec.first_ns, "last_monotonic_ns": rec.last_ns,
         "joint_names": JOINT_NAMES,
         "sdk_root": str(sdk_root) if sdk_root.is_dir() else "installed_sdk",
+        "recorder_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "notes": "tau_est is SDK-estimated, not calibrated shaft torque; two temperature fields are raw SDK values; no commands published",
     }
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
