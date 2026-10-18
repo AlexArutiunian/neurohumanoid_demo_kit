@@ -1,32 +1,45 @@
-# Neurohumanoid Demo Kit — Unitree G1 JSON Control
+# Neurohumanoid Demo Kit - управление Unitree G1 через JSON
 
-Transfer kit for moving the working Unitree G1 upper-body JSON control setup to another robot.
+[English version](README_ENG.md)
 
-This branch contains the cleaned robot-side files for:
+Набор файлов для переноса работающей системы управления верхней частью Unitree G1 через JSON на другого робота.
 
-- Unitree SDK2 Python custom tree used by the demo;
-- joystick-triggered JSON motion playback;
-- actual motion recording through ROS 2 `/joint_states` and `/tf`;
-- Unitree G1 URDF with Inspire hand;
-- RH56DFTP / Inspire hand example scripts and tactile toolkit notes.
+В репозитории собраны подготовленные файлы, которые используются на стороне робота:
 
-## Ubuntu / ROS 2 compatibility
+- модифицированная версия Unitree SDK2 Python для демонстрации
+- запуск движений из JSON по кнопкам джойстика
+- запись фактических движений через ROS 2, топики `/joint_states` и `/tf`
+- URDF-модель Unitree G1 с кистями Inspire
+- примеры работы с RH56DFTP / Inspire и заметки по тактильным датчикам
 
-The JSON arm playback itself is mostly independent of Ubuntu 20 vs Ubuntu 22 as long as `unitree_sdk2py` works and the correct network interface is used.
+## Дополнительно: WearBench-G1
 
-The ROS recording path depends on the installed ROS 2 distro:
+В ветке `wearbench-g1-readonly-telemetry` есть отдельный регистратор для научного исследования нагрузок на суставы. Он читает `rt/lowstate`, записывает состояния 29 приводов и IMU и **не отправляет команд управления**.
 
-- Ubuntu 22 usually uses ROS 2 Humble: `/opt/ros/humble/setup.bash`;
-- Ubuntu 20 usually uses ROS 2 Foxy: `/opt/ros/foxy/setup.bash`.
+- [Инструкция по записи телеметрии](robot_home/wearbench_g1/README.md)
+- [Скрипт записи](robot_home/wearbench_g1/record_lowstate.py)
+- [Проверка полученных данных](robot_home/wearbench_g1/validate_run.py)
+- [История конфликтов управляющих процессов](debug_history/arm_sdk_control_conflict.md)
 
-This branch auto-detects Humble or Foxy in:
+Для записи WearBench не нужно запускать установщик JSON-демонстрации или копировать файлы поверх рабочего окружения робота. Подробные команды приведены в отдельной инструкции.
 
-- `robot_home/unitree_sdk2_python_custom/example/g1/high_level/joystick_launch_json_record.py` when it starts `record_actual_motion_ros.py`;
-- the generated `~/g1_json_demo_env.sh` created by `scripts/install_to_robot.sh`.
+## Совместимость Ubuntu и ROS 2
 
-If neither Humble nor Foxy exists, JSON playback can still run with `--no-record`, but ROS-based recording will not work until ROS 2 is installed/configured.
+Воспроизведение JSON-движений руками в основном не зависит от Ubuntu 20 или Ubuntu 22. Главное, чтобы работала `unitree_sdk2py` и был указан правильный сетевой интерфейс.
 
-## Repository layout
+Запись через ROS 2 зависит от установленной версии ROS:
+
+- Ubuntu 22 обычно использует ROS 2 Humble: `/opt/ros/humble/setup.bash`
+- Ubuntu 20 обычно использует ROS 2 Foxy: `/opt/ros/foxy/setup.bash`
+
+В этой ветке Humble или Foxy определяются автоматически:
+
+- в `robot_home/unitree_sdk2_python_custom/example/g1/high_level/joystick_launch_json_record.py` при запуске `record_actual_motion_ros.py`
+- в файле `~/g1_json_demo_env.sh`, который создаётся скриптом `scripts/install_to_robot.sh`
+
+Если Humble и Foxy не установлены, воспроизведение JSON всё равно можно запускать с параметром `--no-record`. Для записи через ROS 2 сначала потребуется установить и настроить ROS.
+
+## Структура репозитория
 
 ```text
 robot_home/
@@ -48,26 +61,26 @@ robot_home/
 └── g1_29dof_rev_1_0_with_inspire_hand_FTP.urdf
 ```
 
-## What was intentionally not included
+## Что намеренно не включено
 
-Heavy/generated files are intentionally excluded from the transfer kit:
+Тяжёлые и автоматически создаваемые файлы в набор не входят:
 
-- Python virtual environments: `.venv/`, `venv/`;
-- ROS/colcon build outputs: `build/`, `install/`, `log/`;
-- motion logs and recorded datasets: `actual_motion_logs/`, `data_steer/`, `data_real_states/`, `data_real_keyframes/`;
-- RGB-D datasets: `dataset_rgbd/`;
-- binary archives and temporary outputs: `*.zip`, `*.bag`, `*.db3`, `*.log`, `*.pyc`.
+- виртуальные окружения Python: `.venv/`, `venv/`
+- результаты сборки ROS/colcon: `build/`, `install/`, `log/`
+- журналы движений и записанные наборы данных: `actual_motion_logs/`, `data_steer/`, `data_real_states/`, `data_real_keyframes/`
+- RGB-D наборы данных: `dataset_rgbd/`
+- архивы, временные и служебные файлы: `*.zip`, `*.bag`, `*.db3`, `*.log`, `*.pyc`
 
-The transfer kit is meant to preserve the code and small JSON motions, not old recordings or local environments.
+Цель набора - сохранить код и небольшие JSON-движения, а не старые записи или локальные окружения.
 
-## External dependency for Inspire/RH56DFTP hand
+## Внешние зависимости кистей Inspire/RH56DFTP
 
-The `DFTP_arm` folder contains example scripts and tactile-toolkit files, but the Python packages below may already be installed in the robot environment and are not guaranteed to be vendored in this repo:
+В папке `DFTP_arm` есть примеры и инструменты для тактильных датчиков. При этом Python-пакеты, которые могут быть установлены на самом роботе, необязательно находятся внутри репозитория:
 
 - `RH56DFTP`
 - `Register`
 
-Check them on the robot:
+Проверка на роботе:
 
 ```bash
 python3 - <<'PY'
@@ -78,11 +91,11 @@ print("OK Register:", regs.__file__)
 PY
 ```
 
-If this fails, install/copy the Inspire RH56DFTP Python API packages separately before using hand-control scripts.
+Если импорт не работает, отдельно установите или скопируйте Python API для Inspire RH56DFTP, прежде чем запускать управление кистями.
 
-## Install to a new robot
+## Установка на другого робота
 
-On the new Unitree G1 robot:
+Для переноса именно **JSON-демонстрации** на новый Unitree G1:
 
 ```bash
 cd ~
@@ -91,27 +104,27 @@ cd neurohumanoid_demo_kit
 bash scripts/install_to_robot.sh
 ```
 
-By default the install script copies files into `/home/unitree`. To install into another home directory:
+По умолчанию установщик копирует файлы в `/home/unitree`. Для другого домашнего каталога используйте:
 
 ```bash
 TARGET_HOME=/home/unitree bash scripts/install_to_robot.sh
 ```
 
-The installer also creates:
+Установщик также создаёт:
 
 ```bash
 ~/g1_json_demo_env.sh
 ```
 
-It is optional for pure JSON playback from the `high_level` folder, but useful for ROS setup and imports:
+Для простого воспроизведения JSON из папки `high_level` этот файл необязателен, но он помогает настроить ROS и пути импорта:
 
 ```bash
 source ~/g1_json_demo_env.sh
 ```
 
-## Run the JSON joystick demo
+## Запуск JSON-демонстрации с джойстика
 
-### Terminal 1 — publish `/joint_states`
+### Терминал 1 - публикация `/joint_states`
 
 ```bash
 source ~/g1_json_demo_env.sh
@@ -119,7 +132,7 @@ cd ~/joints_xyz
 python3 lowstate_to_jointstates_ros.py
 ```
 
-### Terminal 2 — robot state publisher
+### Терминал 2 - публикация состояния робота
 
 ```bash
 source ~/g1_json_demo_env.sh
@@ -128,7 +141,7 @@ ros2 run robot_state_publisher robot_state_publisher \
   -p robot_description:="$(cat ~/g1_29dof_rev_1_0_with_inspire_hand_FTP.urdf)"
 ```
 
-### Terminal 3 — joystick launcher
+### Терминал 3 - запуск скрипта джойстика
 
 ```bash
 cd ~/unitree_sdk2_python_custom/example/g1/high_level
@@ -150,7 +163,7 @@ python3 joystick_launch_json_record.py eth0 \
   --record-target-frame pelvis
 ```
 
-If ROS recording is not needed, the same launcher can run without recording:
+Если запись через ROS не нужна, можно запустить тот же скрипт без неё:
 
 ```bash
 cd ~/unitree_sdk2_python_custom/example/g1/high_level
@@ -163,19 +176,19 @@ python3 joystick_launch_json_record.py eth0 \
   --no-record
 ```
 
-Joystick mapping in `joystick_launch_json_record.py`:
+Назначение кнопок в `joystick_launch_json_record.py`:
 
-- `A` — run JSON selected by `--json-a`;
-- `B` — run JSON selected by `--json-b`;
-- `Down` — run JSON selected by `--json-down`;
-- `Up` — skip the current empty hold frame in the JSON player;
-- `X` — send right-hand open pose;
-- `Y` — send right-hand fist pose;
-- `Select + Start` — exit launcher.
+- `A` - запустить JSON, выбранный параметром `--json-a`
+- `B` - запустить JSON, выбранный параметром `--json-b`
+- `Down` - запустить JSON, выбранный параметром `--json-down`
+- `Up` - пропустить текущий пустой кадр удержания в JSON-плеере
+- `X` - разжать пальцы правой кисти
+- `Y` - сжать правую кисть в кулак
+- `Select + Start` - выйти из программы
 
-## Quick health checks
+## Быстрые проверки после установки
 
-Check core files after install:
+Проверьте наличие основных файлов:
 
 ```bash
 for f in \
@@ -193,7 +206,7 @@ for f in \
 done
 ```
 
-Check selected ROS 2 environment:
+Проверьте выбранное окружение ROS 2:
 
 ```bash
 source ~/g1_json_demo_env.sh
@@ -201,7 +214,7 @@ echo "ROS_DISTRO=${G1_DEMO_ROS_DISTRO:-none}"
 echo "RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-none}"
 ```
 
-Check Unitree SDK import:
+Проверьте импорт Unitree SDK:
 
 ```bash
 cd ~/unitree_sdk2_python_custom
@@ -212,7 +225,7 @@ print("OK unitree_sdk2py imports")
 PY
 ```
 
-Check RH56DFTP hand package import:
+Проверьте импорт пакетов для кисти RH56DFTP:
 
 ```bash
 python3 - <<'PY'
@@ -223,10 +236,12 @@ print("OK Register:", regs.__file__)
 PY
 ```
 
-## Safety notes
+## Безопасность
 
-Do not run old direct low-level arm control scripts in parallel with `joystick_launch_json_record.py` or `g1_json_upper.py`.
+Не запускайте старые скрипты прямого низкоуровневого управления руками параллельно с `joystick_launch_json_record.py` или `g1_json_upper.py`.
 
-Do not run `sliders_arm.py` at the same time as the joystick launcher if both try to control the same RH56DFTP hand over TCP.
+Не запускайте `sliders_arm.py` одновременно с программой джойстика, если обе программы пытаются управлять одной и той же кистью RH56DFTP по TCP.
 
-For a new robot, first test with short/simple JSON motions and keep emergency stop access ready.
+На новом роботе начинайте с коротких и простых JSON-движений. Во время проверки должен быть доступ к аварийной остановке.
+
+Подробнее об уже возникавших конфликтах процессов: [debug_history/arm_sdk_control_conflict.md](debug_history/arm_sdk_control_conflict.md).
