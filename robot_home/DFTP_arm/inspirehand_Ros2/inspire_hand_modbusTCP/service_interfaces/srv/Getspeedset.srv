@@ -1,7 +1,0 @@
-#接收的命令类型
-string status
-#灵巧手ID
-int16 id
----
-#接收数据
-int16[6] curspeedset

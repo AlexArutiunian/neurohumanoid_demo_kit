@@ -1,34 +1,10 @@
-# Python
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 .venv/
 venv/
-
-# Logs / recordings
+wearbench_data/
+data/
+*.csv
+*.meta.json
+*.npz
 *.log
-actual_motion_logs/
-data_steer/
-data_real_states/
-data_real_keyframes/
-dataset_rgbd/
-*.bag
-*.db3
-
-# ROS / colcon
-build/
-install/
-log/
-
-# Large/binary temporary files
-*.zip
-*.tar
-*.tar.gz
-*.STL
-*.stl
-
-# OS/editor
-.DS_Store
-.vscode/
-.idea/
