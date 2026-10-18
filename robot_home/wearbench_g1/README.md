@@ -16,6 +16,30 @@
 
 Это не калибровка закона физического износа и не доказательство оставшегося срока службы.
 
+## Поддерживаемые системы
+
+| Система | Системный Python | ROS 2 | WearBench |
+| --- | --- | --- | --- |
+| Ubuntu 20.04 | 3.8 | Foxy | Подписка SDK2 напрямую, ROS не требуется |
+| Ubuntu 22.04 | 3.10 | Humble | Подписка SDK2 напрямую, ROS не требуется |
+
+Скрипты `record_lowstate.py`, `check_environment.py` и `validate_run.py` не используют Python-синтаксис, требующий версию новее 3.8. Для получения сигналов используется собственный `unitree_sdk2py` и CycloneDDS. `rclpy`, `ros2` и `source /opt/ros/.../setup.bash` для WearBench не нужны.
+
+**Важный нюанс ARM64:** в `setup.py` текущей копии SDK задана зависимость `cyclonedds==0.10.2`. Готовые Linux wheels этого выпуска есть для Python 3.8 и 3.10 на x86_64, но для aarch64 может потребоваться сборка из исходников. Не запускай `pip install -U` и не переустанавливай ROS/DDS внутри рабочего окружения управления. Сначала используй уже работающий на роботе Python с SDK2.
+
+Перед запуском логирования:
+
+```bash
+python3 --version
+ip -br addr
+python3 robot_home/wearbench_g1/record_lowstate.py --self-test
+python3 robot_home/wearbench_g1/check_environment.py --iface eth0
+```
+
+Последняя команда проверит Python, Ubuntu, сетевой интерфейс, импорт SDK/CycloneDDS и наличие Foxy/Humble. Можно добавить `--require-ros`, если одновременно используешь старые ROS-скрипты, но для нового регистратора это не требуется.
+
+Если `check_environment.py` сообщает об ошибке импорта, не меняй существующее окружение вслепую. Сначала пришли его вывод. Если импорты проходят, но при записи 10 секунд нет сообщений, проверь имя сетевого интерфейса и только после подтверждения источника попробуй `--topic rt/lf/lowstate`. Реальная DDS-связь требует проверки именно на роботе.
+
 ## Безопасный запуск на роботе
 
 Лучше взять **отдельную папку**: не выполнять `scripts/install_to_robot.sh` и не копировать поверх имеющихся файлов `~/unitree_sdk2_python_custom`.
@@ -30,6 +54,7 @@ cd ~/neurohumanoid_wearbench
 python3 -m py_compile robot_home/wearbench_g1/record_lowstate.py \
   robot_home/wearbench_g1/validate_run.py
 python3 robot_home/wearbench_g1/record_lowstate.py --self-test
+python3 robot_home/wearbench_g1/check_environment.py --iface eth0
 
 # Пассивная запись 30 с в режиме стояния
 python3 robot_home/wearbench_g1/record_lowstate.py \
